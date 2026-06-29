@@ -169,7 +169,8 @@ SPIN/
 ├── examples/
 │   ├── 01_spiral.ipynb        # the toy example that exposes the mechanism
 │   ├── 02_burgers.ipynb       # viscous Burgers, long-horizon prediction
-│   └── 03_fisher_kpp.ipynb    # Fisher-KPP fronts, long-horizon prediction
+│   ├── 03_fisher_kpp.ipynb    # Fisher-KPP fronts, long-horizon prediction
+│   └── 04_custom_equation.ipynb  # template: bring SPIN to your own equation
 ├── pyproject.toml
 ├── requirements.txt
 ├── LICENSE
@@ -184,6 +185,11 @@ equation's hyper-reduced residual and Jacobian to the core machinery.
 ---
 
 ## Bringing SPIN to your own equation
+
+> **Worked template:** [`examples/04_custom_equation.ipynb`](examples/04_custom_equation.ipynb)
+> walks through this end to end on a brand-new equation (the 1D heat equation),
+> from FOM to a running static / baseline / SPIN comparison. Start there if you
+> want a copy-paste starting point.
 
 All problem-specific code lives behind two methods. To run SPIN on a new
 equation you only need to:
