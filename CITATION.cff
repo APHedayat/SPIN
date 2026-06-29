@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the accompanying paper."
+title: "SPIN: Spectral Preconditioning via IN-span learning"
+authors:
+  - family-names: Hedayat
+    given-names: Amirpasha
+    affiliation: University of Michigan
+  - family-names: Balzano
+    given-names: Laura
+    affiliation: University of Michigan
+  - family-names: Duraisamy
+    given-names: Karthik
+    affiliation: University of Michigan
+version: 0.1.0
+license: MIT
+repository-code: "https://github.com/USERNAME/SPIN"
+preferred-citation:
+  type: article
+  title: "In-span learning: adapting reduced-order models using their own predictions"
+  authors:
+    - family-names: Hedayat
+      given-names: Amirpasha
+    - family-names: Balzano
+      given-names: Laura
+    - family-names: Duraisamy
+      given-names: Karthik
+  year: 2026
+  journal: "arXiv preprint"
+  notes: "arXiv:XXXX.XXXXX (to be updated on posting)"
