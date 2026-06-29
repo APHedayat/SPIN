@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spin-rom"
+version = "0.1.0"
+description = "SPIN: Spectral Preconditioning via IN-span learning for adaptive reduced-order models"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Amirpasha Hedayat", email = "ahedayat@umich.edu" },
+    { name = "Laura Balzano" },
+    { name = "Karthik Duraisamy" },
+]
+keywords = [
+    "reduced-order modeling", "in-span learning", "spectral preconditioning",
+    "incremental SVD", "subspace tracking", "scientific machine learning",
+]
+dependencies = [
+    "numpy>=1.22",
+    "scipy>=1.8",
+    "matplotlib>=3.5",
+]
+
+[project.optional-dependencies]
+notebooks = ["jupyter", "ipykernel"]
+
+[project.urls]
+"Paper" = "https://arxiv.org/abs/XXXX.XXXXX"
+"Repository" = "https://github.com/USERNAME/SPIN"
+
+[tool.setuptools.packages.find]
+where = ["src"]
