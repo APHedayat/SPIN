@@ -1,13 +1,13 @@
 """Diagnostics that quantify how in-span learning reshapes the basis.
 
-Two groups, matching the paper:
+Two groups:
 
-* **single-correction diagnostics** (Fig. 3): how well one out-of-span
-  correction is absorbed -- residual capture, plane-change angle, correction
-  error, and the residual-to-weakest-mode ratio ``eta``.
-* **trajectory diagnostics** (Fig. 6): how the basis evolves along the online
-  run -- singular-value history, basis reorientation per step, and genuine
-  subspace motion.
+* **single-correction diagnostics**: how well one out-of-span correction is
+  absorbed -- residual capture, plane-change angle, correction error, and the
+  residual-to-weakest-mode ratio ``eta``.
+* **trajectory diagnostics**: how the basis evolves along the online run --
+  singular-value history, basis reorientation per step, and genuine subspace
+  motion.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ import numpy as np
 
 
 # ======================================================================
-# Single-correction diagnostics (Fig. 3)
+# Single-correction diagnostics
 # ======================================================================
 def residual_capture(Phi_post, r_hat):
     r"""Residual capture :math:`\chi = \|\Phi_{\rm post}^\top \hat r\|_2`.
@@ -74,7 +74,7 @@ def eta_ratio(q_corr, Phi_pre, sigma_pre, gamma_out=1.0):
 
 
 # ======================================================================
-# Trajectory diagnostics (Fig. 6)
+# Trajectory diagnostics
 # ======================================================================
 def basis_reorientation(Phi_old, Phi_new):
     r"""Basis reorientation :math:`\|I - (\Phi^{n+1})^\top \Phi^n\|_F`.

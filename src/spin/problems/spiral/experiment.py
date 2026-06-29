@@ -26,18 +26,18 @@ def build_spiral_experiment(alpha=0.4, dt=0.35, t0=4.0, gamma_in=0.1, n_inspan=4
     Parameters
     ----------
     alpha, dt, t0 : float
-        Spiral parameters (paper defaults reproduce Fig. 2/3 exactly).
+        Spiral parameters.
     gamma_in : float
-        In-span forgetting factor. The paper uses an aggressive ``0.1`` here so
-        the spectral contraction is clearly visible.
+        In-span forgetting factor. An aggressive ``0.1`` is used by default so the
+        spectral contraction is clearly visible.
     n_inspan : int
-        Number of in-span updates streamed before the correction (paper: 4).
+        Number of in-span updates streamed before the correction.
 
     Returns
     -------
     dict
-        All quantities needed for the figures and the reported numbers, including
-        per-model ``capture``, ``plane`` (deg), ``correction_error``, the in-plane
+        All quantities needed for the figures, including per-model ``capture``,
+        ``plane`` (deg), ``correction_error``, the in-plane
         competition (``lam_out/lam_in``, ``eta_out/eta_in``), the bases/spectra,
         and the in-span ellipse sequence.
     """
