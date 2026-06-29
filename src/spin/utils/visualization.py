@@ -1,4 +1,4 @@
-"""Shared plotting style and small reusable figure helpers.
+"""Matplotlib helpers: a shared paper-style palette and small figure utilities.
 
 These keep the example notebooks short. The palette matches the paper figures:
 FOM = charcoal, static = grey, baseline adaptive = coral, SPIN = teal.
@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import numpy as np
 
-# consistent palette / display names across all figures
+#: consistent palette across all figures
 PALETTE = {
     "fom": "#2b2b2b",       # full-order model (charcoal)
     "ic": "#9a9a9a",        # initial condition (grey)
@@ -17,6 +17,8 @@ PALETTE = {
     "spin": "#159a8c",      # SPIN ROM (teal)
     "corr": "#3b6ea5",      # correction-event marker (steel blue)
 }
+
+#: display names for the two adaptive models
 NAMES = {"baseline": "baseline adaptive", "spin": "SPIN"}
 
 

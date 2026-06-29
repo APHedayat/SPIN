@@ -1,16 +1,18 @@
-"""Incremental SVD (iSVD) with forgetting.
+"""Online basis adaptation: incremental SVD with forgetting.
 
 This single routine is the engine behind *both* SPIN channels:
 
-* the **in-span** update streams the ROM's own prediction through ``isvd`` with
-  forgetting factor ``gamma_in`` (the snapshot lies inside the current span, so
-  the residual is zero and only the spectrum / in-plane rotation change), and
-* the **out-of-span** update streams an occasional full-order correction
-  snapshot through ``isvd`` with forgetting factor ``gamma_out`` (the snapshot
-  has a component outside the span, so the subspace genuinely moves).
+* the **in-span** update streams the ROM's own prediction through :func:`isvd`
+  with forgetting factor ``gamma_in``. The snapshot lies inside the current span,
+  so the orthogonal residual is zero and only the spectrum and the in-plane
+  basis orientation change.
+* the **out-of-span** update streams an occasional full-order correction snapshot
+  through :func:`isvd` with forgetting factor ``gamma_out``. The snapshot has a
+  component outside the span, so the subspace genuinely moves.
 
-The math is the truncated iSVD-with-forgetting of Brand-type updates
-(see Methods, Eqs. 20-23 of the paper).
+The math is the truncated iSVD-with-forgetting of Brand-type updates (Methods,
+Eqs. 20-23 of the paper). The routine is problem-agnostic: it knows nothing about
+the equation, only about a basis, its singular values, and an incoming snapshot.
 """
 
 from __future__ import annotations
@@ -18,14 +20,14 @@ from __future__ import annotations
 import numpy as np
 
 
-def isvd(V_old, S_old, u_new, forgetting_factor=0.0, r=None, tol=1e-12,
+def isvd(V_old, S_old, u_new, forgetting_factor=1.0, r=None, tol=1e-12,
          orthonormalize=True):
-    r"""One rank-:math:`r` truncated iSVD update with forgetting.
+    r"""One rank-:math:`r` truncated iSVD update with an exponential forgetting factor.
 
-    Maintains a rank-:math:`r` approximation of an exponentially weighted
-    snapshot history. Given the current basis :math:`\Phi` and singular values
-    :math:`\Sigma`, and a new (preprocessed) snapshot :math:`y`, it forms the
-    small core matrix
+    Maintains a rank-:math:`r` approximation of an exponentially weighted snapshot
+    history. Given the current basis :math:`\Phi` and singular values
+    :math:`\Sigma`, and a new (already preprocessed) snapshot :math:`y`, it forms
+    the small core matrix
 
     .. math::
         K = \begin{bmatrix} \gamma\,\Sigma & w \\ 0 & \rho \end{bmatrix},
@@ -36,11 +38,11 @@ def isvd(V_old, S_old, u_new, forgetting_factor=0.0, r=None, tol=1e-12,
 
     Parameters
     ----------
-    V_old : ndarray, shape (N, r)
+    V_old : (N, r) ndarray
         Current orthonormal basis :math:`\Phi`.
-    S_old : ndarray, shape (r,)
+    S_old : (r,) ndarray
         Current singular values :math:`\Sigma`.
-    u_new : ndarray, shape (N,)
+    u_new : (N,) ndarray
         Incoming (already-preprocessed) snapshot :math:`y`.
     forgetting_factor : float in [0, 1]
         :math:`\gamma`. ``1`` keeps all past history, ``0`` forgets it entirely.
@@ -50,15 +52,15 @@ def isvd(V_old, S_old, u_new, forgetting_factor=0.0, r=None, tol=1e-12,
         Residual norm below which the snapshot is treated as exactly in-span
         (no new direction is appended).
     orthonormalize : bool
-        Apply a QR clean-up to the returned basis. The paper uses
-        ``True`` for out-of-span updates and ``False`` for in-span updates
-        (the in-span update is a pure in-plane rotation and stays orthonormal).
+        Apply a QR clean-up to the returned basis. The paper uses ``True`` for
+        out-of-span updates and ``False`` for in-span updates (a pure in-plane
+        rotation, which already stays orthonormal).
 
     Returns
     -------
-    V_new : ndarray, shape (N, r)
+    V_new : (N, r) ndarray
         Updated basis.
-    S_new : ndarray, shape (r,)
+    S_new : (r,) ndarray
         Updated singular values.
     """
     U = V_old
@@ -68,7 +70,7 @@ def isvd(V_old, S_old, u_new, forgetting_factor=0.0, r=None, tol=1e-12,
         r = Kdim
 
     # In-span coefficient w = Phi^T y and orthogonal residual q = y - Phi w.
-    # A least-squares solve is used instead of U.T @ y so the routine is robust
+    # A least-squares solve is used (instead of U.T @ y) so the routine is robust
     # even if U has drifted slightly from perfect orthonormality.
     y = u_new.reshape(-1, 1)
     p, _, _, _ = np.linalg.lstsq(U, y, rcond=None)
@@ -84,7 +86,7 @@ def isvd(V_old, S_old, u_new, forgetting_factor=0.0, r=None, tol=1e-12,
     else:
         u_perp = q / qnorm
 
-    # small (r+1) x (r+1) core matrix with forgetting applied to the spectrum
+    # small (r+1) x (r+1) core matrix, with forgetting applied to the spectrum
     Kcore = np.zeros((Kdim + 1, Kdim + 1), dtype=U.dtype)
     Kcore[:Kdim, :Kdim] = np.diag(forgetting_factor * s[:Kdim])
     Kcore[:Kdim, Kdim] = p.ravel()

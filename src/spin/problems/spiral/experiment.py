@@ -16,7 +16,8 @@ from __future__ import annotations
 
 import numpy as np
 
-from .models import SpiralModel
+from ...diagnostics import correction_error, plane_angle_deg, residual_capture
+from .fom import SpiralModel
 
 
 def build_spiral_experiment(alpha=0.4, dt=0.35, t0=4.0, gamma_in=0.1, n_inspan=4):
@@ -36,9 +37,9 @@ def build_spiral_experiment(alpha=0.4, dt=0.35, t0=4.0, gamma_in=0.1, n_inspan=4
     -------
     dict
         All quantities needed for the figures and the reported numbers, including
-        per-model ``capture``, ``plane`` (deg), ``correction_error``, the
-        in-plane competition (``lambda_r``, ``eta``), the bases/spectra, and the
-        in-span ellipse sequence.
+        per-model ``capture``, ``plane`` (deg), ``correction_error``, the in-plane
+        competition (``lam_out/lam_in``, ``eta_out/eta_in``), the bases/spectra,
+        and the in-span ellipse sequence.
     """
     spiral = SpiralModel(alpha=alpha, dt=dt, t0=t0)
     G, c = spiral.G, spiral.c
@@ -59,13 +60,13 @@ def build_spiral_experiment(alpha=0.4, dt=0.35, t0=4.0, gamma_in=0.1, n_inspan=4
         a_ROM[k + 1] = Ar @ a_ROM[k] + cr
     u_ROM = {k: Phi0 @ a_ROM[k] for k in a_ROM}
 
-    # --- in-span preconditioning: covariance recursion C <- g^2 C + a a^T ----
+    # in-span preconditioning: covariance recursion C <- gamma^2 C + a a^T
     coeff_seq = [a_ROM[k] for k in [2, 3, 4, 5]][:n_inspan]
     Phis, spectra, covs = _inspan_pre_basis(Phi0, Sigma0, coeff_seq, gamma_in)
     Phi_in_pre = Phis[-1].copy()
     Sigma_in_pre = spectra[-1]
 
-    # --- single out-of-span correction: one exact FOM step from the ROM state
+    # single out-of-span correction: one exact FOM step from the ROM state
     u_corr = G @ u_ROM[5] + c
     r_corr = u_corr - Phi0 @ (Phi0.T @ u_corr)
     rho = float(np.linalg.norm(r_corr))
@@ -83,11 +84,9 @@ def build_spiral_experiment(alpha=0.4, dt=0.35, t0=4.0, gamma_in=0.1, n_inspan=4
     eta_out = rho ** 2 / lam_out
     eta_in = rho ** 2 / lam_in
 
-    # --- apply the same correction to both pre-update states (iSVD, gamma=1) --
-    Phi_out_post, _ = _isvd_update(Phi0, Sigma0, u_corr, gamma=1.0)
-    Phi_in_post, _ = _isvd_update(Phi_in_pre, Sigma_in_pre, u_corr, gamma=1.0)
-
-    from .diagnostics import residual_capture, plane_angle_deg, correction_error
+    # apply the same correction to both pre-update states (iSVD, gamma=1)
+    Phi_out_post, _ = _isvd_closed_form(Phi0, Sigma0, u_corr, gamma=1.0)
+    Phi_in_post, _ = _isvd_closed_form(Phi_in_pre, Sigma_in_pre, u_corr, gamma=1.0)
 
     return {
         "spiral": spiral, "times": times, "x_FOM": x_FOM,
@@ -135,7 +134,7 @@ def _inspan_pre_basis(Phi_init, Sigma_init, coeff_seq, gamma):
     return Phis, spectra, covs
 
 
-def _isvd_update(Phi, Sigma, y_new, gamma=1.0):
+def _isvd_closed_form(Phi, Sigma, y_new, gamma=1.0):
     """Closed-form rank-r iSVD update used by the spiral study (Brand-type)."""
     Phi = np.asarray(Phi)
     Sigma = np.asarray(Sigma)
