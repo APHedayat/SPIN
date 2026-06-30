@@ -20,7 +20,7 @@ If you use this code, please cite the paper (see [`CITATION.cff`](CITATION.cff))
 
 ---
 
-## The idea in one minute
+## The idea
 
 A reduced-order model compresses an expensive high-dimensional simulation into a
 small subspace and evolves only a few coordinates inside it — fast, but it loses
@@ -41,11 +41,11 @@ correction.
 
 ```
   baseline adaptive ROM:   predict ─ predict ─ predict ─ CORRECT ─ predict ─ ...
-                                                          ▲ external (out-of-span)
+                                                            ▲ external (out-of-span)
 
   SPIN ROM:                predict ─ in-span ─ in-span ─ CORRECT ─ in-span ─ ...
-                                     ▲ learn from   ▲ same external correction,
-                                       own output     but absorbed better
+                                        ▲ learn from        ▲ same external correction,
+                                          own output          but absorbed better
 ```
 
 **SPIN is exactly the baseline adaptive ROM, plus an in-span update between every
@@ -134,16 +134,16 @@ basis without moving the subspace. The full procedure is Algorithm 1 in the pape
 ```
       offline               online (loop)
    ┌───────────┐   ┌──────────────────────────────────────────────────────┐
-   │ FOM snaps │──▶│ LSPG step (Newton)                                     │
-   └───────────┘   │        │                                              │
-                   │        ▼                                              │
-   ┌───────────┐   │  every zs steps:   one FOM query ─▶ OUT-OF-SPAN iSVD  │
-   │ POD basis │──▶│                                     (moves subspace)   │
-   └───────────┘   │  otherwise:        own prediction ─▶ IN-SPAN iSVD      │
-   ┌───────────┐   │                                     (rotates basis)    │
-   │   QDEIM   │──▶│        │                                              │
-   └───────────┘   │        ▼                                              │
-                   │  refresh QDEIM + reproject coords ────────────────────┘
+   │ FOM snaps │──▶│ LSPG step (Newton)                                   │
+   └───────────┘   │        │                                             │
+                   │        ▼                                             │
+   ┌───────────┐   │  every zs steps:   one FOM query ─▶ OUT-OF-SPAN iSVD │
+   │ POD basis │──▶│                                     (moves subspace) │
+   └───────────┘   │  otherwise:        own prediction ─▶ IN-SPAN iSVD    │
+   ┌───────────┐   │                                     (rotates basis)  │
+   │   QDEIM   │──▶│        │                                             │
+   └───────────┘   │        ▼                                             │
+                   │  refresh QDEIM + reproject coords                    │
                    └──────────────────────────────────────────────────────┘
 ```
 
