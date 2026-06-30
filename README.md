@@ -264,8 +264,6 @@ For the spiral, the notebook reproduces the reported residual capture
 
 ## Citation
 
-A BibTeX entry will be finalized upon publication; see [`CITATION.cff`](CITATION.cff).
-
 ```bibtex
 @article{hedayat2026inspan,
   title   = {In-span learning: adapting reduced-order models using their own predictions},
