@@ -14,7 +14,7 @@ This is the companion code to our paper:
 
 > *In-span learning: adapting reduced-order models using their own predictions.* <br>
 > Amirpasha Hedayat, Laura Balzano, Karthik Duraisamy. <br>
-> [arXiv:XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX) *(link will be updated on posting)*
+> [arXiv:2607.02937](https://arxiv.org/abs/2607.02937)
 
 If you use this code, please cite the paper (see [`CITATION.cff`](CITATION.cff)).
 
@@ -268,7 +268,7 @@ For the spiral, the notebook reproduces the reported residual capture
 @article{hedayat2026inspan,
   title   = {In-span learning: adapting reduced-order models using their own predictions},
   author  = {Hedayat, Amirpasha and Balzano, Laura and Duraisamy, Karthik},
-  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  journal = {arXiv preprint arXiv:2607.02937},
   year    = {2026}
 }
 ```
